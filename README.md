@@ -10,6 +10,8 @@ Built and tested on an Intel i3 + 8GB RAM laptop with limited internet quota.
 
 Perfect for learning NATS, microservices patterns, and event-driven architecture without heavy frameworks.
 
+i discontinued this because java spring boot was too heavy on my laptop and i decided to discontinue, i am going to deploy more microservice projects though probably with lightweight frameworks
+
 ### Features
 - Single Spring Boot app that **publishes** and **subscribes** to NATS
 - REST endpoint to trigger `OrderCreatedEvent`
