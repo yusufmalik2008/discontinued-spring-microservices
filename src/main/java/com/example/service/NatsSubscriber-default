@@ -1,0 +1,46 @@
+package com.example.service;
+
+import com.example.event.OrderCreatedEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nats.client.Connection;
+import io.nats.client.Dispatcher;
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
+
+@Service
+public class NatsSubscriber {
+
+    private final Connection nats;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public NatsSubscriber(Connection nats) {
+        this.nats = nats;
+    }
+
+    @PostConstruct
+    public void subscribe() {
+        Dispatcher dispatcher = nats.createDispatcher(msg -> {
+            String payload = new String(msg.getData());
+            try {
+                OrderCreatedEvent event = mapper.readValue(payload, OrderCreatedEvent.class);
+                System.out.println("Payment Service: Processing payment for order " + event.getOrderId());
+                System.out.println("Customer: " + event.getCustomerName() + ", Amount: $" + event.getAmount());
+                Thread.sleep(500);
+                System.out.println("Payment SUCCESSFUL for order " + event.getOrderId() + "\n");
+            } catch (Exception e) {
+                System.err.println("Failed to process message: " + payload);
+            }
+        });
+
+	// old (CORE NATS)
+        dispatcher.subscribe("orders.created", "payment-service-queue");
+      //  dispatcher.subscribe("orders.created", 
+    //PushSubscribeOptions.builder()
+       // .durable("payment-service-durable")  // survives restart
+       // .build());
+
+
+	System.out.println("Subscribed to orders.created");
+
+    }
+}

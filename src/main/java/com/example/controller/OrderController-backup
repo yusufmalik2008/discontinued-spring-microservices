@@ -1,0 +1,32 @@
+package com.example.controller;
+
+import com.example.event.OrderCreatedEvent;
+import com.example.service.NatsPublisher;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    private final NatsPublisher publisher;
+
+    public OrderController(NatsPublisher publisher) {
+        this.publisher = publisher;
+    }
+
+    @PostMapping
+    public String createOrder(@RequestBody OrderRequest req) throws JsonProcessingException {
+        OrderCreatedEvent event = OrderCreatedEvent.builder()
+                .orderId(java.util.UUID.randomUUID().toString())
+                .customerName(req.customerName())
+                .amount(req.amount())
+                .product(req.product())
+                .build();
+
+        publisher.publishOrderCreated(event);
+        return "Order created! ID: " + event.getOrderId();
+    }
+
+    record OrderRequest(String customerName, Double amount, String product) {}
+}

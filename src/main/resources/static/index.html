@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NATS Order Demo</title>
+  <style>body{font-family:Arial;background:#f0f2f5;padding:50px;text-align:center}</style>
+</head>
+<body>
+  <h1>Order Service</h1>
+  <p><input id="name" placeholder="Your name" value="Setiadi"></p>
+  <p><input id="amount" type="number" placeholder="Amount" value="999"></p>
+  <p><input id="product" placeholder="Product" value="Victory"></p>
+  <br>
+  <button onclick="send()">Create Order</button>
+  <pre id="log" style="text-align:left;margin-top:30px;background:#fff;padding:20px;border-radius:8px"></pre>
+
+  <script>
+  function send() {
+    fetch('http://localhost:8080/api/orders', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        customerName: document.getElementById('name').value,
+        amount: parseFloat(document.getElementById('amount').value),
+        product: document.getElementById('product').value
+      })
+    })
+    .then(r => r.text())
+    .then(txt => document.getElementById('log').innerText = txt + "\n" + document.getElementById('log').innerText)
+    .catch(e => document.getElementById('log').innerText = "Error: " + e);
+  }
+  </script>
+</body>
+</html>
