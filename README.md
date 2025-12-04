@@ -1,4 +1,4 @@
-# NATS + Spring Boot Event-Driven Demo
+# (Discontinued) NATS + Spring Boot Event-Driven Demo
 
 ![Java 21](https://img.shields.io/badge/Java-21-blue?logo=openjdk)
 ![Spring Boot 3.3](https://img.shields.io/badge/Spring_Boot-3.3-success?logo=springboot)
